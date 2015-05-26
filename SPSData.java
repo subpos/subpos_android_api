@@ -228,14 +228,11 @@ public class SPSData implements Comparable<SPSData>{
         //Mu
         // 2   - Outdoors with clear conditions
         // 2.5 - Indoors with clear conditions
-        // 3.0 - Indoors with not clear conditions
+        // 3.0 - Indoors with moderately clear conditions
+        // 3.5 - Indoors with moderately bad conditions
         // 4.0 - Indoors with bad conditions
-
-        ///SubPos Path Loss Coefficient
-        //|MSB                                                LSB|
-        //|           1 bit           |          2 bits          |
-        //| Environment (in/outdoors) |  Path condition (average)|
-        //| indoors = 0, outdoors = 1 |
+        // 4.5 - Indoors with terrible conditions
+        // 5.0 - Indoors with horrendous conditions
 
 
         double c = 299.792458; //We will use MHz for freq.
