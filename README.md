@@ -5,17 +5,17 @@ This initial release has been adapted from the prototype code that has been work
 
 To use this API, all you need to do is call:
 
-public class yourClass extends Activity {
-    SubPos subpos;
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-
-        //Create new SubPos service
-        subpos = new SubPos(this); //"this" passes the context
-    }
+    public class yourClass extends Activity {
+        SubPos subpos;
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.main);
+    
+            //Create new SubPos service
+            subpos = new SubPos(this); //"this" passes the context
+        }
 
 To get your position:
 
-SubPosPosition position = subpos.getPosition(); //returns null if position is not calculated
+    SubPosPosition position = subpos.getPosition(); //returns null if position is not calculated
