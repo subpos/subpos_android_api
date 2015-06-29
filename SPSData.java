@@ -197,18 +197,22 @@ public class SPSData implements Comparable<SPSData>{
         this.distance = average(distances);
     }
 
-    //Rolling average
+    //Rolling average with median filter
     private double average(ArrayList<Double> toAverage)
     {
+        ArrayList<Double> tempAverage = new ArrayList<Double>(toAverage);
         double sum = 0;
-        if (num_of_averages > 0) {
-            for (Double value : toAverage) {
-                sum = sum + value;
-            }
-            return sum / toAverage.size();
-        } else {
-            return toAverage.get(0);
+        int remove;
+
+        Collections.sort(tempAverage);
+        remove = (int)(tempAverage.size()/4); //median removal size
+
+        //Get the Average of the median values
+        for ( int x = remove; x < (tempAverage.size() - 1) - remove; x++)
+        {
+            sum = sum + tempAverage.get(x).doubleValue();
         }
+        return sum / (tempAverage.size() - (2 * remove));
     }
 
     public double distanceCalc(double tx_pwr, double rx_pwr, int frequency, int coefficient)    {
