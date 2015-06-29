@@ -131,7 +131,7 @@ public class NodeLocations {
         if (currentNodePosition != null)
         {
             build = currentNodePosition.lat + ", " + currentNodePosition.lng + ", "
-                    + currentNodePosition.altitude;
+                    + (currentPosition.altitude / 100); //Convert alt to meters
         }
         return build;
     }
