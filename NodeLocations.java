@@ -158,7 +158,8 @@ public class NodeLocations {
         double[] distances   = new double[locations.size()];
         int i = 0;
         while (i < locations.size()) {
-            positions[i] = new double[]{locations.get(i).lat,locations.get(i).lng,locations.get(i).altitude};
+            //Convert altitude to similar units to lat/long
+            positions[i] = new double[]{locations.get(i).lat,locations.get(i).lng,locations.get(i).altitude / 1000000};
             distances[i] = locations.get(i).distance;
             i++;
         }

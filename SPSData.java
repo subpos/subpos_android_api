@@ -160,14 +160,14 @@ public class SPSData implements Comparable<SPSData>{
             this.app_id = ssid[14] << 16 | ssid[15] << 8 | ssid[16];
 
             this.altitude = ((double) (ssid[17] << 18 | ssid[18] << 10 | ssid[19] << 2 |
-                    ((ssid[20] >> 6) & 0x03))) / 1000000;
+                    ((ssid[20] >> 6) & 0x03)));
             if (((ssid[20] & 0x20) >> 5) != 0) {
                 this.altitude = (this.altitude * -1);
             }
             this.off_map = ((ssid[20] & 0x10) >> 4) != 0;
             this.three_d_map = ((ssid[20] & 0x08) >> 3) != 0;
             this.tx_pwr = ((ssid[20] & 0x07) << 8) | ssid[21];
-            this.tx_pwr = (this.tx_pwr - 1000) / 10; //TODO: Fix tx power decoding
+            this.tx_pwr = (this.tx_pwr - 1000) / 10;
 
             this.environment = (ssid[22] & 0xE0) >> 5;
             this.res = (ssid[22] & 0x1F << 8) | ssid[23];
