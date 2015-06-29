@@ -72,7 +72,7 @@ public class SPSData implements Comparable<SPSData>{
         String data = new String();
         data = data + this.lat + ", ";
         data = data + this.lng + ", ";
-        data = data + this.altitude + ", ";
+        data = data + (this.altitude / 100) + ", ";
         data = data + ((double)((long)(this.distance * 10000000)))/100 + "m";
 
         return data;
