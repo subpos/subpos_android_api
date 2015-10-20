@@ -157,9 +157,15 @@ public class NodeLocations {
         double[][] positions = new double[locations.size()][3];
         double[] distances   = new double[locations.size()];
         int i = 0;
-        while (i < locations.size()) {
-            //Convert altitude to similar units to lat/long
-            positions[i] = new double[]{locations.get(i).lat,locations.get(i).lng,locations.get(i).altitude / 1000000};
+       while (i < locations.size()) {
+
+            //Map projection is treated as Mercator for calcs
+            //Convert lat,lng to meters and then back again
+            //Altitude is in cm
+
+            positions[i] = new double[]{WebMercator.latitudeToY(locations.get(i).lat),
+                    WebMercator.longitudeToX(locations.get(i).lng),locations.get(i).altitude};
+
             distances[i] = locations.get(i).distance;
             i++;
         }
@@ -168,7 +174,8 @@ public class NodeLocations {
 
         LeastSquaresOptimizer.Optimum optimum = solver.solve();
 
-        return new NodePosition(optimum.getPoint().toArray()[0],optimum.getPoint().toArray()[1]);
+        return new Position(WebMercator.yToLatitude(optimum.getPoint().toArray()[0]),
+                WebMercator.xToLongitude(optimum.getPoint().toArray()[1]),optimum.getPoint().toArray()[2]);
     }
 
 }

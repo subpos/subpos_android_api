@@ -10,7 +10,7 @@ import org.apache.commons.math3.util.Pair;
 /**
  * Models the Trilateration problem. This is a formulation for a nonlinear least
  * squares optimizer.
- *
+ * 
  * The MIT License (MIT)
  * Copyright (c) 2014 Scott Wiedemann
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -100,14 +100,16 @@ public class TrilaterationFunction implements MultivariateJacobianFunction {
 		return new Array2DRowRealMatrix(jacobian);
 	}
 
-	
+	@Override
 	public Pair<RealVector, RealMatrix> value(RealVector point) {
 
-		/////////// Value ///////////
+		// input
 		double[] pointArray = point.toArray();
 
-		// computing least squares. for each applicable node will have separate equation
+		// output
 		double[] resultPoint = new double[this.distances.length];
+		
+		// compute least squares
 		for (int i = 0; i < resultPoint.length; i++) {
 			resultPoint[i] = 0.0;
 			// calculate sum, add to overall
@@ -117,10 +119,7 @@ public class TrilaterationFunction implements MultivariateJacobianFunction {
 			resultPoint[i] -= (this.getDistances()[i]) * (this.getDistances()[i]);
 		}
 
-		/////////// Jacobian ///////////
 		RealMatrix jacobian = jacobian(point);
-
 		return new Pair<RealVector, RealMatrix>(new ArrayRealVector(resultPoint), jacobian);
 	}
-
 }

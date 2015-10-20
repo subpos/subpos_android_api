@@ -73,7 +73,7 @@ public class SPSData implements Comparable<SPSData>{
         data = data + this.lat + ", ";
         data = data + this.lng + ", ";
         data = data + (this.altitude / 100) + ", ";
-        data = data + ((double)((long)(this.distance * 10000000)))/100 + "m";
+        data = data + ((double)((int)(this.distance * 100))/100) + "m";
 
         return data;
     }
@@ -275,8 +275,7 @@ public class SPSData implements Comparable<SPSData>{
 
         double exp = (((double)(tx_pwr/10)) - rx_pwr -
                 10*Math.log10(4*Math.PI/(c/frequency)))/(20*mu);
-        //Need to change to GPS precision; divide meters by /100000
-        this.distance = Math.pow(10.0, exp) / 100000;
+        this.distance = Math.pow(10.0, exp);
         //Return meters
         return Math.pow(10.0, exp);
     }
