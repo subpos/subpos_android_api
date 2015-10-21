@@ -157,20 +157,19 @@ public class SPSData implements Comparable<SPSData>{
                     (ssid[9] & 0xFF))) / 10000000;
             this.lng = ((double) (ssid[10] << 24 | (ssid[11] & 0xFF) << 16 | (ssid[12] & 0xFF) << 8 |
                     (ssid[13] & 0xFF))) / 10000000;
-            this.app_id = ssid[14] << 16 | ssid[15] << 8 | ssid[16];
+            this.app_id = (ssid[14] & 0xFF) << 16 | (ssid[15] & 0xFF) << 8 | (ssid[16] & 0xFF);
 
-            this.altitude = ((double) (ssid[17] << 18 | ssid[18] << 10 | ssid[19] << 2 |
-                    ((ssid[20] >> 6) & 0x03)));
+            this.altitude = ((double) ((ssid[17] & 0xFF) << 18 | (ssid[18] & 0xFF) << 10 | (ssid[19] & 0xFF) << 2 |
+                    (((ssid[20] & 0xFF) >> 6) & 0x03)));
             if (((ssid[20] & 0x20) >> 5) != 0) {
                 this.altitude = (this.altitude * -1);
             }
             this.off_map = ((ssid[20] & 0x10) >> 4) != 0;
             this.three_d_map = ((ssid[20] & 0x08) >> 3) != 0;
-            this.tx_pwr = ((ssid[20] & 0x07) << 8) | ssid[21];
+            this.tx_pwr = ((double)((ssid[20] & 0x07) << 8 | (ssid[21] & 0xFF)));
             this.tx_pwr = (this.tx_pwr - 1000) / 10;
-
             this.environment = (ssid[22] & 0xE0) >> 5;
-            this.res = (ssid[22] & 0x1F << 8) | ssid[23];
+            this.res = (ssid[22] & 0x1F << 8) | (ssid[23] & 0xFF);
 
             this.seen = new Date();
             this.rx_pwr = rx_pwr;
@@ -178,8 +177,8 @@ public class SPSData implements Comparable<SPSData>{
             this.freq = freq;
 
             distanceCalc(this.tx_pwr, this.rx_pwr, this.freq, this.environment);
+            
             this.distances.add(this.distance);
-
         } catch (Exception ex) {}
 
     }
