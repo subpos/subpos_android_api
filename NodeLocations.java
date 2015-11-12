@@ -1,6 +1,6 @@
 package iocomms.subpos;
 
-/* SSID Android API for SubPos (http://www.subpos.org)
+/* Android API for SubPos (http://www.subpos.org)
  * Copyright (C) 2015 Blair Wyatt
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@ package iocomms.subpos;
 
 import org.apache.commons.math3.fitting.leastsquares.LeastSquaresOptimizer;
 import org.apache.commons.math3.fitting.leastsquares.LevenbergMarquardtOptimizer;
+import org.apache.commons.math3.linear.RealVector;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -76,7 +77,8 @@ public class NodeLocations {
     private  int averages = 0; //number of averages for node distance calcs.
 
     private ArrayLocations locations = new ArrayLocations();
-    NodePosition currentNodePosition = null;
+    Position currentNodePosition = null;
+    Position currentPosition = null;
     private boolean calculated = false;
 
     public ArrayList<SPSData> getLocations()
@@ -131,7 +133,7 @@ public class NodeLocations {
         if (currentNodePosition != null)
         {
             build = currentNodePosition.lat + ", " + currentNodePosition.lng + ", "
-                    + (currentPosition.altitude / 100); //Convert alt to meters
+                    + (currentNodePosition.altitude / 100); //Convert alt to meters
         }
         return build;
     }
@@ -140,24 +142,29 @@ public class NodeLocations {
         if (locations.size() > 0) {
             if (locations.size() == 1)
             {
-                currentNodePosition = new NodePosition(locations.get(0).lat, locations.get(0).lng,
+                currentPosition = new Position(locations.get(0).lat, locations.get(0).lng,
                         locations.get(0).altitude, locations.get(0).distance);
             }
             else
             {
-                currentNodePosition = trilaterate(locations);
+                currentPosition = trilaterate(locations);
             }
             calculated = true;
         }
     }
 
-    private NodePosition trilaterate(ArrayLocations locations) {
-        //Now using https://github.com/lemmingapex/Trilateration
+    //Cannot debug a single node
+    private Position trilaterate(ArrayLocations locations) {
+        //Trilateration nonlinear weighted least squares
+
+        //https://github.com/lemmingapex/Trilateration - MIT Licence
+        //http://commons.apache.org/proper/commons-math/download_math.cgi
+
 
         double[][] positions = new double[locations.size()][3];
         double[] distances   = new double[locations.size()];
         int i = 0;
-       while (i < locations.size()) {
+        while (i < locations.size()) {
 
             //Map projection is treated as Mercator for calcs
             //Convert lat,lng to meters and then back again
@@ -173,9 +180,42 @@ public class NodeLocations {
         NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
 
         LeastSquaresOptimizer.Optimum optimum = solver.solve();
+        double[] centroid = optimum.getPoint().toArray();
+
+        double errorRadius = 0;
+        boolean errorCalc = false;
+
+        // Error and geometry information
+        try {
+            //Create new array without the altitude. Including altitude causes a
+            //SingularMatrixException as it cannot invert the matrix.
+            double[][] err_positions = new double[locations.size()][2];
+            i = 0;
+            while (i < locations.size()) {
+
+                err_positions[i] = new double[]{positions[i][0],
+                        positions[i][1]};
+                i++;
+            }
+            trilaterationFunction = new TrilaterationFunction(err_positions, distances);
+            solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+
+            optimum = solver.solve();
+            RealVector standardDeviation = optimum.getSigma(0);
+            //RealMatrix covarianceMatrix = optimum.getCovariances(0);
+
+            errorRadius = ((standardDeviation.getEntry(0) + standardDeviation.getEntry(1)) / 2) * 100;
+            errorCalc = true;
+
+        } catch (Exception ex) {
+            errorRadius = 0;
+            errorCalc = false;
+        }
 
         return new Position(WebMercator.yToLatitude(optimum.getPoint().toArray()[0]),
-                WebMercator.xToLongitude(optimum.getPoint().toArray()[1]),optimum.getPoint().toArray()[2]);
+                WebMercator.xToLongitude(centroid[1]),centroid[2],
+                errorRadius, errorCalc);
+
     }
 
 }

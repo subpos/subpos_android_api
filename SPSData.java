@@ -1,6 +1,6 @@
 package iocomms.subpos;
 
-/* SSID Android API for SubPos (http://www.subpos.org)
+/* Android API for SubPos (http://www.subpos.org)
  * Copyright (C) 2015 Blair Wyatt
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,8 +18,9 @@ package iocomms.subpos;
  *
  */
 
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 
 
 public class SPSData implements Comparable<SPSData>{
