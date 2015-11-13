@@ -134,7 +134,8 @@ public class SubPos {
             return null;
         }
     }
-    
+    //Get the current position error as calculated from the visible nodes.
+    //Return 0 if nothing is calculated.
     public Double getPositionError()
     {
         if (SPSNodes.isCalculated()) {
@@ -144,6 +145,12 @@ public class SubPos {
         }
         
         return 0;
-
     }
+    
+    //Get the current visible Nodes
+    public ArrayList<SPSData> getNodes()
+    {
+        return SPSNodes.getLocations();
+    }
+    
 }
