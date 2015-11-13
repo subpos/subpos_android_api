@@ -128,10 +128,22 @@ public class SubPos {
     public SubPosPosition getPosition()
     {
         if (SPSNodes.isCalculated()) {
-            return new SubPosPosition(SPSNodes.currentNodePosition.lat,
-                    SPSNodes.currentNodePosition.lng, SPSNodes.currentNodePosition.altitude);
+            return new SubPosPosition(SPSNodes.currentPosition.lat,
+                    SPSNodes.currentPosition.lng, SPSNodes.currentPosition.altitude);
         } else {
             return null;
         }
+    }
+    
+    public Double getPositionError()
+    {
+        if (SPSNodes.isCalculated()) {
+            if (SPSNodes.currentPosition.errorCalced) { 
+                return SPSNodes.currentPosition.errorRadius;
+            }
+        }
+        
+        return 0;
+
     }
 }
