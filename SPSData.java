@@ -217,8 +217,7 @@ public class SPSData implements Comparable<SPSData>{
 
     public double distanceCalc(double tx_pwr, double rx_pwr, int frequency, int coefficient)    {
         //Adapted from "Robust Indoor Wi-Fi Positioning System for Android-based Smartphone"
-        //http://www.academia.edu/5075508/Robust_Indoor_Wi-Fi_Positioning_System_for_
-        //Android-_based_Smartphone
+        //https://www.ri.cmu.edu/pub_files/2011/8/RobustIndoorLocalizationTech2011.pdf
 
         //Pr = Pt - Lu
         //Lu = 10log10(4*pi/lambda) + 20log10(d)*mu
